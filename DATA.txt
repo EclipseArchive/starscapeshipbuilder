@@ -1,0 +1,18 @@
+Infinity, 1, 0, 1, 1, 4, 1, Corvette
+Radix, 0, 0, 2, 1, 4, 1, Corvette
+Chevron, 1, 2, 1, 0, 4, 1, Corvette
+Liberty, 1, 2, 1, 1, 4, 1, Corvette
+Edict, 1, 0, 1, 2, 4, 2, Corvette
+Knifejaw, 2, 2, 1, 0, 4, 1, Corvette
+Phalanx, 1, 2, 1, 0, 6, 1, Frigate
+Halo, 0, 0, 2, 1, 6, 1, Frigate
+Adamant, 1, 0, 1, 2, 6, 1, Frigate
+Barracuda, 2, 1, 1, 1, 6, 1, Frigate
+Judicator, 0, 1, 1, 2, 6, 2, Frigate
+Virtue, 1, 2, 1, 1, 6, 1, Frigate
+Fortitude, 2, 0, 1, 2, 4, 2, Destroyer, 2
+Horizon, 0, 1, 2, 2, 8, 2, Destroyer
+Echelon, 1, 2, 1, 1, 4, 2, Destroyer, 2
+Bulwark, 1, 2, 0, 1, 3, 2, Destroyer, 3
+Justice, 1, 2, 1, 1, 4, 2, Destroyer, 2
+Conciliator, 1, 1, 1, 2, 4, 3, Destroyer, 2

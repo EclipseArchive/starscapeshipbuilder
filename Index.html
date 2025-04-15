@@ -1,0 +1,101 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1.0"/>
+  <title>Starscape Ship Builder</title>
+  <link href="https://fonts.googleapis.com/css2?family=Source+Code+Pro&display=swap" rel="stylesheet">
+  <style>
+    body {
+      font-family: 'Source Code Pro', monospace;
+      background-color: #111;
+      color: #ddd;
+      padding: 20px;
+    }
+    select, button, textarea {
+      background-color: #222;
+      color: #ddd;
+      border: 1px solid #555;
+      padding: 6px;
+      margin: 4px;
+      border-radius: 4px;
+      font-family: inherit;
+    }
+    button:hover {
+      background-color: #333;
+      cursor: pointer;
+    }
+    img {
+      max-width: 300px;
+      display: block;
+      margin: 10px 0;
+    }
+    .section {
+      margin: 16px 0;
+    }
+    textarea {
+      width: 100%;
+      height: 80px;
+      resize: none;
+    }
+    .dropdowns {
+      display: flex;
+      flex-wrap: wrap;
+      gap: 8px;
+    }
+    .dropdowns select {
+      flex: 1 0 120px;
+    }
+  </style>
+</head>
+<body>
+  <h1>Starscape Ship Builder</h1>
+
+  <div class="section">
+    <label for="ship-class">Ship Class:</label>
+    <select id="ship-class" onchange="updateShipList()"></select>
+
+    <label for="ship-name">Ship:</label>
+    <select id="ship-name" onchange="updateUI()"></select>
+  </div>
+
+  <img id="ship-image" src="" alt="Ship Image"/>
+
+  <div class="section">
+    <h3>Turrets</h3>
+    <div id="turret-slots" class="dropdowns"></div>
+  </div>
+
+  <div class="section" id="medium-turret-section" style="display:none;">
+    <h3>Medium Turrets</h3>
+    <div id="medium-turret-slot" class="dropdowns"></div>
+  </div>
+
+  <div class="section">
+    <h3 id="rig-title-WEP">Weapon Rigs</h3>
+    <div id="rig-WEP" class="dropdowns"></div>
+
+    <h3 id="rig-title-DEF">Defense Rigs</h3>
+    <div id="rig-DEF" class="dropdowns"></div>
+
+    <h3 id="rig-title-ENG">Engine Rigs</h3>
+    <div id="rig-ENG" class="dropdowns"></div>
+
+    <h3 id="rig-title-RCT">Reactor Rigs</h3>
+    <div id="rig-RCT" class="dropdowns"></div>
+  </div>
+
+  <div class="section">
+    <h3>Subsystems</h3>
+    <div id="subsystem-slots" class="dropdowns"></div>
+  </div>
+
+  <div class="section">
+    <button onclick="exportBuild()">Export Build</button>
+    <button onclick="importBuild()">Import Build</button>
+    <textarea id="export-import-box" placeholder="Exported data will appear here. Paste data here to import."></textarea>
+  </div>
+
+  <script src="script.js"></script>
+</body>
+</html>
