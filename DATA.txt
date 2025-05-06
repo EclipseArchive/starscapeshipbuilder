@@ -16,3 +16,9 @@ Echelon, 1, 2, 1, 1, 4, 2, Destroyer, 2
 Bulwark, 1, 2, 0, 1, 3, 2, Destroyer, 3
 Justice, 1, 2, 1, 1, 4, 2, Destroyer, 2
 Conciliator, 1, 1, 1, 2, 4, 3, Destroyer, 2
+Ozark, 0, 1, 1, 1, 3, 1, Miner, 0
+Kodiak, 0, 1, 1, 1, 4, 1, Miner, 0
+Yukon, 0, 2, 1, 1, 10, 1,  Miner, 0
+Eos, 0, 1, 0, 1, 3, 1, Miner, 0
+Vesta, 1, 1, 0, 1, 4, 1, Miner, 0
+{SHIPNAME}, {WEP RIGS}, {DEF RIGS}, {ENG RIGS}, {RCT RIGS}, {TURRET COUNT}, {SUBSYSTEM COUNT}, {SHIP CLASS}, {MEDIUM TURRETS}

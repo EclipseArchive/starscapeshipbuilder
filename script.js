@@ -1,4 +1,6 @@
-const turretTypes = ['Beam', 'Cannon', 'Flak', 'Coilgun', 'Railgun', 'Ion', 'Shrapnel', 'Blaster'];
+const turretTypes = ['Beam', 'Cannon', 'Flak', 'Coilgun', 'Railgun', 'Ion', 'Shrapnel', 'Blaster', 'Miner', 'Strip Miner', 'Precision Miner', 'Ice Miner'];
+
+const mediumTurretTypes = ['Beam', 'Cannon', 'Flak', 'Coilgun', 'Railgun', 'Ion', 'Shrapnel', 'Blaster'];
 
 const rigTypes = {
   WEP: ['AP Rounds', 'HE Rounds', 'Ion Rounds', 'Heat Sink', 'Nullifier Rounds', 'Enhanced Servos', 'Rapid Bolt', 'Swift Bolt', 'Heavy Bolt', 'Targeter'],
@@ -74,7 +76,7 @@ function updateUI() {
   const mediumSection = document.getElementById('medium-turret-section');
   if (ship.medium > 0) {
     mediumSection.style.display = 'block';
-    createSelects('medium-turret-slot', turretTypes, ship.medium);
+    createSelects('medium-turret-slot', mediumTurretTypes, ship.medium);
   } else {
     mediumSection.style.display = 'none';
   }
