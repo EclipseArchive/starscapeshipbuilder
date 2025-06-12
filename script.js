@@ -36,6 +36,14 @@ async function fetchData() {
 
   const classSelect = document.getElementById('ship-class');
   classSelect.innerHTML = '';
+
+  const placeholderOption = document.createElement('option');
+  placeholderOption.value = '';
+  placeholderOption.textContent = 'Select a Class';
+  placeholderOption.disabled = true;
+  placeholderOption.selected = true;
+  classSelect.appendChild(placeholderOption);
+
   Object.keys(shipData).forEach(cls => {
     const opt = document.createElement('option');
     opt.value = cls;
@@ -43,7 +51,36 @@ async function fetchData() {
     classSelect.appendChild(opt);
   });
 
-  updateShipList();
+  const shipSelect = document.getElementById('ship-name');
+  shipSelect.innerHTML = '';
+  const shipSelectPlaceholder = document.createElement('option');
+  shipSelectPlaceholder.value = '';
+  shipSelectPlaceholder.textContent = 'Select a Ship';
+  shipSelectPlaceholder.disabled = true;
+  shipSelectPlaceholder.selected = true;
+  shipSelect.appendChild(shipSelectPlaceholder);
+
+  document.getElementById('ship-image').src = '/Resources/STEEL.png';
+
+  hideAllTitlesAndButtons();
+}
+
+function hideAllTitlesAndButtons() {
+  document.getElementById('rig-title-WEP').style.display = 'none';
+  document.getElementById('rig-title-DEF').style.display = 'none';
+  document.getElementById('rig-title-ENG').style.display = 'none';
+  document.getElementById('rig-title-RCT').style.display = 'none';
+
+  // Hide turret section header
+  const turretHeaders = [...document.querySelectorAll('h3')].filter(h3 => h3.textContent === 'Turrets');
+  turretHeaders.forEach(h => (h.style.display = 'none'));
+
+  // Hide subsystem section header
+  const subsysHeaders = [...document.querySelectorAll('h3')].filter(h3 => h3.textContent === 'Subsystems');
+  subsysHeaders.forEach(h => (h.style.display = 'none'));
+
+  const applyButton = document.querySelector('button[onclick="applyFirstTurretToAll()"]');
+  if (applyButton) applyButton.style.display = 'none';
 }
 
 function updateShipList() {
@@ -51,7 +88,25 @@ function updateShipList() {
   const shipSelect = document.getElementById('ship-name');
   shipSelect.innerHTML = '';
 
-  if (!shipData[shipClass]) return;
+  if (!shipClass || !shipData[shipClass]) {
+    const shipSelectPlaceholder = document.createElement('option');
+    shipSelectPlaceholder.value = '';
+    shipSelectPlaceholder.textContent = 'Select a Ship';
+    shipSelectPlaceholder.disabled = true;
+    shipSelectPlaceholder.selected = true;
+    shipSelect.appendChild(shipSelectPlaceholder);
+
+    document.getElementById('ship-image').src = '/Resources/STEEL.png';
+    hideAllTitlesAndButtons();
+    return;
+  }
+
+  const shipSelectPlaceholder = document.createElement('option');
+  shipSelectPlaceholder.value = '';
+  shipSelectPlaceholder.textContent = '-';
+  shipSelectPlaceholder.disabled = true;
+  shipSelectPlaceholder.selected = true;
+  shipSelect.appendChild(shipSelectPlaceholder);
 
   shipData[shipClass].forEach(ship => {
     const option = document.createElement('option');
@@ -66,47 +121,66 @@ function updateShipList() {
 function updateUI() {
   const shipClass = document.getElementById('ship-class').value;
   const shipName = document.getElementById('ship-name').value;
+  if (!shipClass || !shipName) {
+    document.getElementById('ship-image').src = '/Resources/STEEL.png';
+    hideAllTitlesAndButtons();
+    clearDropdowns();
+    return;
+  }
+
   const ship = shipData[shipClass].find(s => s.name === shipName);
-  if (!ship) return;
+  if (!ship) {
+    document.getElementById('ship-image').src = '/Resources/STEEL.png';
+    hideAllTitlesAndButtons();
+    clearDropdowns();
+    return;
+  }
 
   document.getElementById('ship-image').src = `/Resources/Ships/${shipClass}/${shipName}.webp`;
 
-  createSelects('turret-slots', turretTypes, ship.turrets);
+  createDropdowns('turret-slots', turretTypes, ship.turrets);
+  document.querySelector('button[onclick="applyFirstTurretToAll()"]').style.display = ship.turrets > 1 ? 'inline-block' : 'none';
 
-  const mediumSection = document.getElementById('medium-turret-section');
-  if (ship.medium > 0) {
-    mediumSection.style.display = 'block';
-    createSelects('medium-turret-slot', mediumTurretTypes, ship.medium);
+  const medSection = document.getElementById('medium-turret-section');
+  const medContainer = document.getElementById('medium-turret-slot');
+  if (ship.medium && ship.medium > 0) {
+    medSection.style.display = 'block';
+    createDropdowns('medium-turret-slot', mediumTurretTypes, ship.medium);
   } else {
-    mediumSection.style.display = 'none';
+    medSection.style.display = 'none';
+    medContainer.innerHTML = '';
   }
 
-  ['WEP', 'DEF', 'ENG', 'RCT'].forEach(type => {
-    const container = document.getElementById(`rig-${type}`);
-    const title = document.getElementById(`rig-title-${type}`);
-    const count = ship[type.toLowerCase()];
-    if (count > 0) {
-      title.style.display = 'block';
-      createSelects(`rig-${type}`, rigTypes[type], count);
-    } else {
-      title.style.display = 'none';
-      container.innerHTML = '';
-    }
-  });
+  createDropdowns('rig-WEP', rigTypes.WEP, ship.wep);
+  createDropdowns('rig-DEF', rigTypes.DEF, ship.def);
+  createDropdowns('rig-ENG', rigTypes.ENG, ship.eng);
+  createDropdowns('rig-RCT', rigTypes.RCT, ship.rct);
 
-  createSelects('subsystem-slots', subsystemTypes, ship.subsystems);
+  createDropdowns('subsystem-slots', subsystemTypes, ship.subsystems);
+
+  document.getElementById('rig-title-WEP').style.display = ship.wep > 0 ? 'block' : 'none';
+  document.getElementById('rig-title-DEF').style.display = ship.def > 0 ? 'block' : 'none';
+  document.getElementById('rig-title-ENG').style.display = ship.eng > 0 ? 'block' : 'none';
+  document.getElementById('rig-title-RCT').style.display = ship.rct > 0 ? 'block' : 'none';
+
+  const turretHeaders = [...document.querySelectorAll('h3')].filter(h3 => h3.textContent === 'Turrets');
+  turretHeaders.forEach(h => (h.style.display = 'block'));
+  const subsysHeaders = [...document.querySelectorAll('h3')].filter(h3 => h3.textContent === 'Subsystems');
+  subsysHeaders.forEach(h => (h.style.display = 'block'));
 }
 
-function createSelects(containerId, options, count) {
+function createDropdowns(containerId, options, count) {
   const container = document.getElementById(containerId);
   container.innerHTML = '';
   for (let i = 0; i < count; i++) {
     const select = document.createElement('select');
 
-    const emptyOption = document.createElement('option');
-    emptyOption.value = '-';
-    emptyOption.textContent = '-';
-    select.appendChild(emptyOption);
+    const placeholderOption = document.createElement('option');
+    placeholderOption.value = '';
+    placeholderOption.textContent = '-';
+    placeholderOption.disabled = true;
+    placeholderOption.selected = true;
+    select.appendChild(placeholderOption);
 
     options.forEach(opt => {
       const option = document.createElement('option');
@@ -119,72 +193,119 @@ function createSelects(containerId, options, count) {
   }
 }
 
-function exportBuild() {
-  const shipClass = document.getElementById('ship-class').value;
-  const shipName = document.getElementById('ship-name').value;
-
-  const collectValues = parentId =>
-    Array.from(document.getElementById(parentId).querySelectorAll('select')).map(s => s.value);
-
-  const data = {
-    shipClass,
-    shipName,
-    turrets: collectValues('turret-slots'),
-    mediumTurrets: collectValues('medium-turret-slot'),
-    WEP: collectValues('rig-WEP'),
-    DEF: collectValues('rig-DEF'),
-    ENG: collectValues('rig-ENG'),
-    RCT: collectValues('rig-RCT'),
-    subsystems: collectValues('subsystem-slots')
-  };
-
-  const encoded = btoa(JSON.stringify(data));
-  document.getElementById('export-import-box').value = encoded;
-}
-
-function importBuild() {
-  try {
-    const input = document.getElementById('export-import-box').value.trim();
-    const data = JSON.parse(atob(input));
-
-    document.getElementById('ship-class').value = data.shipClass;
-    updateShipList();
-
-    setTimeout(() => {
-      document.getElementById('ship-name').value = data.shipName;
-      updateUI();
-
-      const applyValues = (parentId, values) => {
-        const selects = document.getElementById(parentId).querySelectorAll('select');
-        selects.forEach((s, i) => {
-          if (values[i]) s.value = values[i];
-        });
-      };
-
-      applyValues('turret-slots', data.turrets);
-      applyValues('medium-turret-slot', data.mediumTurrets);
-      applyValues('rig-WEP', data.WEP);
-      applyValues('rig-DEF', data.DEF);
-      applyValues('rig-ENG', data.ENG);
-      applyValues('rig-RCT', data.RCT);
-      applyValues('subsystem-slots', data.subsystems);
-    }, 50);
-  } catch (e) {
-    alert('Invalid import code!');
-  }
+function clearDropdowns() {
+  ['turret-slots', 'medium-turret-slot', 'rig-WEP', 'rig-DEF', 'rig-ENG', 'rig-RCT', 'subsystem-slots'].forEach(id => {
+    const container = document.getElementById(id);
+    if (container) container.innerHTML = '';
+  });
+  document.querySelector('button[onclick="applyFirstTurretToAll()"]').style.display = 'none';
+  document.getElementById('medium-turret-section').style.display = 'none';
 }
 
 function applyFirstTurretToAll() {
-  const turretSelects = document.getElementById('turret-slots').querySelectorAll('select');
-  const mediumSelects = document.getElementById('medium-turret-slot').querySelectorAll('select');
+  const container = document.getElementById('turret-slots');
+  if (container.children.length === 0) return;
+  const firstSelect = container.children[0];
+  const selectedValue = firstSelect.value;
+  if (!selectedValue) return;
 
-  if (turretSelects.length === 0) return;
-
-  const selectedValue = turretSelects[0].value;
-  if (!selectedValue || selectedValue === '-') return;
-
-  turretSelects.forEach(sel => sel.value = selectedValue);
-  mediumSelects.forEach(sel => sel.value = selectedValue);
+  for (let i = 1; i < container.children.length; i++) {
+    container.children[i].value = selectedValue;
+  }
 }
 
-window.onload = fetchData;
+function exportBuild() {
+  const shipClass = document.getElementById('ship-class').value;
+  const shipName = document.getElementById('ship-name').value;
+  if (!shipClass || !shipName) {
+    alert('Please select a ship class and ship first.');
+    return;
+  }
+  const build = {
+    shipClass,
+    shipName,
+    turrets: getSelectedValues('turret-slots'),
+    mediumTurrets: getSelectedValues('medium-turret-slot'),
+    rigs: {
+      WEP: getSelectedValues('rig-WEP'),
+      DEF: getSelectedValues('rig-DEF'),
+      ENG: getSelectedValues('rig-ENG'),
+      RCT: getSelectedValues('rig-RCT')
+    },
+    subsystems: getSelectedValues('subsystem-slots')
+  };
+
+  const jsonStr = JSON.stringify(build);
+  const encoded = btoa(jsonStr);
+  document.getElementById('export-import-box').value = encoded;
+}
+
+function getSelectedValues(containerId) {
+  const container = document.getElementById(containerId);
+  if (!container) return [];
+  return Array.from(container.children)
+    .map(select => select.value)
+    .filter(v => v !== '' && v !== null);
+}
+
+function importBuild() {
+  const text = document.getElementById('export-import-box').value.trim();
+  if (!text) {
+    alert('Please paste build data to import.');
+    return;
+  }
+  let jsonStr;
+  try {
+    jsonStr = atob(text);
+  } catch {
+    alert('Invalid build data.');
+    return;
+  }
+  let build;
+  try {
+    build = JSON.parse(jsonStr);
+  } catch {
+    alert('Build data corrupted or invalid JSON.');
+    return;
+  }
+
+  if (!build.shipClass || !build.shipName || !shipData[build.shipClass]) {
+    alert('Ship class or ship name invalid.');
+    return;
+  }
+
+  const shipList = shipData[build.shipClass];
+  if (!shipList.find(s => s.name === build.shipName)) {
+    alert('Ship name not found in selected class.');
+    return;
+  }
+
+  document.getElementById('ship-class').value = build.shipClass;
+  updateShipList();
+  document.getElementById('ship-name').value = build.shipName;
+  updateUI();
+
+  setSelectedValues('turret-slots', build.turrets || []);
+  setSelectedValues('medium-turret-slot', build.mediumTurrets || []);
+
+  setSelectedValues('rig-WEP', build.rigs?.WEP || []);
+  setSelectedValues('rig-DEF', build.rigs?.DEF || []);
+  setSelectedValues('rig-ENG', build.rigs?.ENG || []);
+  setSelectedValues('rig-RCT', build.rigs?.RCT || []);
+
+  setSelectedValues('subsystem-slots', build.subsystems || []);
+}
+
+function setSelectedValues(containerId, values) {
+  const container = document.getElementById(containerId);
+  if (!container) return;
+  Array.from(container.children).forEach((select, i) => {
+    if (i < values.length && values[i]) {
+      select.value = values[i];
+    } else {
+      select.value = '';
+    }
+  });
+}
+
+fetchData();
