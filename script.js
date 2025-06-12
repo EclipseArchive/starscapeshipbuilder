@@ -1,6 +1,6 @@
 const turretTypes = ['Beam', 'Cannon', 'Flak', 'Coilgun', 'Railgun', 'Ion', 'Shrapnel', 'Blaster', 'Miner', 'Strip Miner', 'Precision Miner', 'Ice Miner'];
 
-const mediumTurretTypes = ['Beam', 'Cannon', 'Coilgun', 'Railgun', 'Blaster'];
+const mediumTurretTypes = ['Beam-M', 'Cannon-M', 'Coilgun-M', 'Railgun-M', 'Ion-M', 'Blaster-M'];
 
 const rigTypes = {
   WEP: ['AP Rounds', 'HE Rounds', 'Ion Rounds', 'Heat Sink', 'Nullifier Rounds', 'Enhanced Servos', 'Rapid Bolt', 'Swift Bolt', 'Heavy Bolt', 'Targeter'],
@@ -172,6 +172,19 @@ function importBuild() {
   } catch (e) {
     alert('Invalid import code!');
   }
+}
+
+function applyFirstTurretToAll() {
+  const turretSelects = document.getElementById('turret-slots').querySelectorAll('select');
+  const mediumSelects = document.getElementById('medium-turret-slot').querySelectorAll('select');
+
+  if (turretSelects.length === 0) return;
+
+  const selectedValue = turretSelects[0].value;
+  if (!selectedValue || selectedValue === '-') return;
+
+  turretSelects.forEach(sel => sel.value = selectedValue);
+  mediumSelects.forEach(sel => sel.value = selectedValue);
 }
 
 window.onload = fetchData;
